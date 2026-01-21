@@ -172,13 +172,15 @@ void UDPEchoer(string localIP, string bcastIP, const ushort recvPort, const usho
 
 void UDPAnnouncer(string localIP, string bcastIP, const ushort port){
     auto bcastAddr = new InternetAddress(bcastIP, port);
+    auto localAddr = new InternetAddress("127.0.0.1", port);
 
     auto sendSock = new UdpSocket();
     sendSock.setOption(SocketOptionLevel.SOCKET, SocketOption.BROADCAST, 1);
     sendSock.setOption(SocketOptionLevel.SOCKET, SocketOption.REUSEADDR, 1);
 
     while(1){
-        auto r = sendSock.sendTo(cast(ubyte[])format("Hello from UDP server at %s!", localIP), bcastAddr);
+        sendSock.sendTo(cast(ubyte[])format("Hello from UDP server at %s!", localIP), bcastAddr);
+        sendSock.sendTo(cast(ubyte[])format("Hello from UDP server at %s!", localIP), localAddr);
         Thread.sleep(1.seconds);
     }
 }
